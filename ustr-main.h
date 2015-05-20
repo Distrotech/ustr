@@ -94,7 +94,7 @@
 #endif
 
 #ifndef USTR_CONF_COMPILE_USE_INLINE /* have very small functions inline? */
-#define USTR_CONF_COMPILE_USE_INLINE 1
+#define USTR_CONF_COMPILE_USE_INLINE 0
 #endif
 
 #include "ustr-compiler.h"
