@@ -274,14 +274,10 @@ int tst(void)
 
   errno = 0;
   ASSERT(!ustr_io_putfilename(&s2, "doesn't exist.txt", "rb"));
-#ifdef __linux__
   ASSERT(errno == ENOENT);
-#endif
   errno = 0;
   ASSERT(!ustr_io_putfilename(&s2, "./doesn't exist/foo.txt", "rb"));
-#ifdef __linux__
   ASSERT(errno == ENOENT);
-#endif
   ASSERT(ustr_cmp_buf_eq(s2, ustrp_cstr(sp1), ustrp_len(sp1)));
 
 #ifdef ENOSPC

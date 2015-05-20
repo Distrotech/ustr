@@ -171,7 +171,7 @@ int ustrp_sc_utf8_reverse(struct Ustr_pool *p, struct Ustrp **ps1)
 
 USTR_CONF_i_PROTO int ustrp__sc_tolower(struct Ustr_pool *p, struct Ustr **ps1)
 {
-  size_t clen;
+  size_t USTR__COMPILE_ATTR_MAYBE_UNUSED(clen);
   size_t len;
   char *ptr;
   
@@ -201,7 +201,7 @@ USTR_CONF_I_PROTO int ustrp_sc_tolower(struct Ustr_pool *p, struct Ustrp **ps1)
 
 USTR_CONF_i_PROTO int ustrp__sc_toupper(struct Ustr_pool *p, struct Ustr **ps1)
 {
-  size_t clen;
+  size_t USTR__COMPILE_ATTR_MAYBE_UNUSED(clen);
   size_t len;
   char *ptr;
   

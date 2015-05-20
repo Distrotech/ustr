@@ -31,8 +31,8 @@
 # define USTR_CONF_EXACT_BYTES 0
 # define USTR_CONF_USE_SIZE    0
 
-# define USTR_CONF_USE_ASSERT   0
-# define USTR_CONF_USE_EOS_MARK 0
+# define USTR_CONF_USE_ASSERT   1
+# define USTR_CONF_USE_EOS_MARK 1
 
 #else
 /* Same defaults, but can be altered at will. */
@@ -64,10 +64,10 @@
 # endif
 
 # ifndef USTR_CONF_USE_ASSERT
-# define USTR_CONF_USE_ASSERT   0
+# define USTR_CONF_USE_ASSERT   1
 # endif
 # ifndef USTR_CONF_USE_EOS_MARK
-# define USTR_CONF_USE_EOS_MARK 0
+# define USTR_CONF_USE_EOS_MARK 1
 # endif
 
 #endif

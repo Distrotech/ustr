@@ -673,7 +673,7 @@ struct Ustr *ustrp__dupx_undef(struct Ustr_pool *p, size_t sz, size_t rbytes,
                                int exact, int emem, size_t len)
 {
   struct Ustr *ret = USTR_NULL;
-  struct Ustr *chk = USTR_NULL;
+  struct Ustr *USTR__COMPILE_ATTR_MAYBE_UNUSED(chk) = USTR_NULL;
   size_t rsz = 0;
   
   USTR_ASSERT((rbytes == 0) || (rbytes == 1) || (rbytes == 2) || (rbytes == 4)||
@@ -1052,7 +1052,7 @@ struct Ustr *ustrp__dupx_empty(struct Ustr_pool *p, size_t sz, size_t rbytes,
                                int exact, int emem)
 { /* set the error bit, so we always get malloc()'d data, then clear it */
   struct Ustr *s1 = ustrp__dupx_undef(p, sz, rbytes, exact, USTR_TRUE, 0);
-  int eret = USTR_FALSE;
+  int USTR__COMPILE_ATTR_MAYBE_UNUSED(eret) = USTR_FALSE;
 
   if (!s1 || emem)
     return (s1);

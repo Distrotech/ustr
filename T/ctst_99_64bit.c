@@ -2,15 +2,12 @@
 
 static const char *rf = __FILE__;
 
-#ifdef __linux__
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/mman.h>
-#endif
 
 static int big_tst(size_t fsz, size_t usz, int hack, int tst_add)
 {
-#ifdef __linux__
   int fd = -1;
   void *ptr = NULL;
   Ustr *s3 = NULL;
@@ -83,7 +80,6 @@ static int big_tst(size_t fsz, size_t usz, int hack, int tst_add)
   close(fd);
  fail_mkstemp:
   return (EXIT_FAILED_OK);
-#endif
 }
 
 int tst(void)

@@ -1,5 +1,8 @@
-/autoconf_64b
-/autoconf_vsnprintf
+/Makefile
+/autom4te.cache
+/config.log
+/config.status
+/configure
 /ctst_*
 /octst_*
 /tst_*

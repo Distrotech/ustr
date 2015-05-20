@@ -1,6 +1,8 @@
 #! /bin/sh -e
 
-INCDIR=@INCLUDEDIR@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+INCDIR=@includedir@
 MBINDIR=@MBINDIR@
 
 NOT_DONE=1

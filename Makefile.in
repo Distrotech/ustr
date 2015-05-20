@@ -1,47 +1,60 @@
+AR = @AR@
+CC = @CC@
+CFLAGS = @CFLAGS@
+CPPFLAGS = @CPPFLAGS@
+DBG_CFLAGS_OPT = @DBG_CFLAGS_OPT@
+HAVE_64bit_SIZE_MAX = @HAVE_64bit_SIZE_MAX@
+HAVE_STDINT_H = @HAVE_STDINT_H@
+LDFLAGS = @LDFLAGS@
+PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
+PACKAGE_NAME = @PACKAGE_NAME@
+PACKAGE_STRING = @PACKAGE_STRING@
+PACKAGE_TARNAME = @PACKAGE_TARNAME@
+PACKAGE_URL = @PACKAGE_URL@
+PACKAGE_VERSION = @PACKAGE_VERSION@
+RANLIB = @RANLIB@
+SHELL = @SHELL@
+bindir = @bindir@
+datarootdir = @datarootdir@
+datadir = @datadir@
+exec_prefix = @exec_prefix@
+includedir = @includedir@
+includedir_arch = ${includedir}
+libdir = @libdir@
+libexecdir = @libexecdir@
+mandir = @mandir@
+prefix = @prefix@
 
-# FIXME: Lots of C&P of VERSION ... 
+# FIXME: Lots of C&P of VERSION ...
 #   ustr*.pc, ustr.spec, Documentation/*.pl, Documentation/ustr-import.1,
 #   ./scripts/rpms-create-james.sh
-VERS=1.0
-VERS_FULL=$(VERS).4
-VERS_BSO =1.0
-VERS_ESONAME =1
-VERS_ESO     =$(VERS_ESONAME).0.4
+version_major=@version_major@
+version_minor=@version_minor@
+version_release=@version_release@
+VERS_BSO     =${version_major}.${version_minor}
+VERS_ESONAME =${version_major}
+VERS_ESO     =${version_major}.${version_minor}.${version_release}
+SHRDIR=@SHRDIR@
+DOCSHRDIR=@DOCSHRDIR@
+EXAMDIR=@EXAMDIR@
+MBINDIR=@MBINDIR@
+LDCONFIG=@LDCONFIG@
 
-DESTDIR =
-prefix=/usr
-datadir=$(prefix)/share
-libdir=$(prefix)/lib
-libexecdir=$(prefix)/libexec
-bindir=$(prefix)/bin
-includedir=$(prefix)/include
-SHRDIR=$(datadir)/ustr-$(VERS_FULL)
-DOCSHRDIR=$(datadir)/doc/ustr-devel-$(VERS_FULL)
-EXAMDIR=$(SHRDIR)/examples
-mandir=$(datadir)/doc/man
-MBINDIR=$(libexecdir)/ustr-$(VERS_FULL)
+ifeq ($(HAVE_64bit_SIZE_MAX),1)
+    mlib=64
+else
+    mlib=32
+endif
 
-###############################################################################
-#  This is here to work around the "Fedora build system requirement" that a big
-# pile of crap ends up in the build.log file even though all sane people don't
-# want that. See rhbz#248231
-###############################################################################
-HIDE=@
-
-CC = cc
-AR = ar
-RANLIB = ranlib
-LDCONFIG = /sbin/ldconfig
-
-CFLAGS  = -O2 -g
-
+# Want you hide compile commands really? Override it on command-line...
+#HIDE=@
 # Debug versions...
 WARNS = -W -Wall -Wundef -Wshadow -Wpointer-arith -Wbad-function-cast -Wcast-align -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -Wno-format-zero-length -Wformat-nonliteral -Wformat-security # -Wfloat-equal -- no floats
 #  Fedora policies/"reviewers" are completely retarded and refuse to allow
 # lowering the "Fedora build flags" even when it activley hurts their users,
 # this makes it easier for them to hurt you. Welcome to the lowest common
 # denominator collective.
-DBG_ONLY_BAD_POLICIES_HAVE_THIS_EMPTY_CFLAGS=-O1
+DBG_ONLY_BAD_POLICIES_HAVE_THIS_EMPTY_CFLAGS=$(DBG_CFLAGS_OPT)
 DBG_CFLAGS = $(CFLAGS) $(WARNS) $(DBG_ONLY_BAD_POLICIES_HAVE_THIS_EMPTY_CFLAGS)
 
 # Inline tst_*.c and otst_*.c files.
@@ -62,7 +75,8 @@ CFLG_LIB_DBG = $(CFLG_LIB)
 
 DOCS = README-DEVELOPERS TODO \
        Documentation/strdup\ vs.\ ustr.gnumeric \
-       Documentation/index.html \
+
+DOCSHTML = Documentation/index.html \
        Documentation/functions.html \
        Documentation/constants.html \
        Documentation/design.html \
@@ -190,7 +204,6 @@ TST_ALL =  ctst_0_cntl \
 XFAIL_TESTS = 
 
 SRC_HDRS = ustr.h      ustr-debug.h \
-           ustr-conf.h ustr-conf-debug.h \
            ustr-b.h \
            ustr-cmp.h \
            ustr-cntl.h \
@@ -209,6 +222,8 @@ SRC_HDRS = ustr.h      ustr-debug.h \
            ustr-srch.h \
            ustr-sub.h \
            ustr-utf8.h
+
+SRC_HDRS_ARCH = ustr-conf.h ustr-conf-debug.h
 
 SRC_HDRS_MULTI_LIB = \
            ustr-conf-multilib-linux.h ustr-conf-debug-multilib-linux.h \
@@ -282,11 +297,13 @@ SRC_SRCS = $(SRC_SRCS_C) $(SRC_SRCS_H)
 XSRC_SRCS = .gdbinit
 
 DBG_LIB_SHAREDEV    = libustr-debug.so
+DBG_LIB_SHAREDEV_BSO = libustr-debug-$(VERS_BSO).so
 DBG_LIB_SHARED_NAME = libustr-debug-$(VERS_BSO).so.$(VERS_ESONAME)
 DBG_LIB_SHARED      = libustr-debug-$(VERS_BSO).so.$(VERS_ESO)
 DBG_LIB_STATIC      = libustr-debug.a
 
 OPT_LIB_SHAREDEV    = libustr.so
+OPT_LIB_SHAREDEV_BSO = libustr-$(VERS_BSO).so
 OPT_LIB_SHARED_NAME = libustr-$(VERS_BSO).so.$(VERS_ESONAME)
 OPT_LIB_SHARED      = libustr-$(VERS_BSO).so.$(VERS_ESO)
 OPT_LIB_STATIC      = libustr.a
@@ -294,8 +311,8 @@ OPT_LIB_STATIC      = libustr.a
 LIB_SHARED = $(DBG_LIB_SHARED) $(OPT_LIB_SHARED)
 LIB_STATIC = $(DBG_LIB_STATIC) $(OPT_LIB_STATIC)
 
-DEPS_NONC_ALL  = $(SRC_HDRS) $(SRC_SRCS_H)
-DEPS_C_ALL     = $(SRC_HDRS)
+DEPS_NONC_ALL  = $(SRC_HDRS) $(SRC_HDRS_ARCH) $(SRC_SRCS_H)
+DEPS_C_ALL     = $(SRC_HDRS) $(SRC_HDRS_ARCH)
 OBJS_C_DBG_ALL = $(DBG_LIB_STATIC)
 OBJS_C_OPT_ALL = $(OPT_LIB_STATIC)
 
@@ -371,57 +388,88 @@ LIB_STATIC_OPT = \
 
 
 all: ustr-import $(LIB_STATIC)
-		$(HIDE)echo Done static
+		@echo Done static
 
 all-shared: all $(LIB_SHARED)
-		$(HIDE)echo Done shared
+		@echo Done shared
 
-install: all-shared ustr.pc ustr-debug.pc
-		$(HIDE)echo Making directories
+all-opt: $(OPT_LIB_STATIC) $(OPT_LIB_SHARED)
+		@echo Done all opt
+
+all-dbg: $(DBG_LIB_STATIC) $(DBG_LIB_SHARED)
+		@echo Done all dbg
+
+install: install-opt install-dbg
+
+install-opt: install-dirs install-opt-lib install-common
+
+install-dbg: install-dirs install-dbg-lib install-common
+
+install-opt-lib install-dbg-lib install-common: install-dirs
+
+install-dirs:
+		@echo Making directories
 		install -d $(DESTDIR)$(libdir)
 		install -d $(DESTDIR)$(includedir)
+		install -d $(DESTDIR)$(includedir_arch)
 		install -d $(DESTDIR)$(SHRDIR)
 		install -d $(DESTDIR)$(DOCSHRDIR)
+		install -d $(DESTDIR)$(DOCSHRDIR)/html
 		install -d $(DESTDIR)$(EXAMDIR)
 		install -d $(DESTDIR)$(mandir)/man1
 		install -d $(DESTDIR)$(mandir)/man3
 		install -d $(DESTDIR)$(bindir)
 		install -d $(DESTDIR)$(libdir)/pkgconfig
-		$(HIDE)echo Installing files
-		install -m 644 -t $(DESTDIR)$(libdir) $(LIB_STATIC)
-		install -m 755 -t $(DESTDIR)$(libdir) $(LIB_SHARED)
+
+install-opt-lib: $(OPT_LIB_STATIC) $(OPT_LIB_SHARED) ustr.pc
+		@echo Installing files
+		install -m 644 -t $(DESTDIR)$(libdir) $(OPT_LIB_STATIC)
+		install -m 755 -t $(DESTDIR)$(libdir) $(OPT_LIB_SHARED)
 		-rm -f $(DESTDIR)$(libdir)/$(OPT_LIB_SHARED_NAME)
 		ln -s $(OPT_LIB_SHARED) $(DESTDIR)$(libdir)/$(OPT_LIB_SHARED_NAME)
 		-rm -f $(DESTDIR)$(libdir)/$(OPT_LIB_SHAREDEV)
 		ln -s $(OPT_LIB_SHARED_NAME) $(DESTDIR)$(libdir)/$(OPT_LIB_SHAREDEV)
+		-rm -f $(DESTDIR)$(libdir)/$(OPT_LIB_SHAREDEV_BSO)
+		ln -s $(OPT_LIB_SHARED_NAME) $(DESTDIR)$(libdir)/$(OPT_LIB_SHAREDEV_BSO)
+		$(LDCONFIG) -n $(DESTDIR)$(libdir)
+		install -pm 644 -t $(DESTDIR)$(libdir)/pkgconfig ustr.pc
+
+install-dbg-lib: $(DBG_LIB_STATIC) $(DBG_LIB_SHARED) ustr-debug.pc
+		@echo Installing files
+		install -m 644 -t $(DESTDIR)$(libdir) $(DBG_LIB_STATIC)
+		install -m 755 -t $(DESTDIR)$(libdir) $(DBG_LIB_SHARED)
 		-rm -f $(DESTDIR)$(libdir)/$(DBG_LIB_SHARED_NAME)
 		ln -s $(DBG_LIB_SHARED) $(DESTDIR)$(libdir)/$(DBG_LIB_SHARED_NAME)
 		-rm -f $(DESTDIR)$(libdir)/$(DBG_LIB_SHAREDEV)
 		ln -s $(DBG_LIB_SHARED_NAME) $(DESTDIR)$(libdir)/$(DBG_LIB_SHAREDEV)
+		-rm -f $(DESTDIR)$(libdir)/$(DBG_LIB_SHAREDEV_BSO)
+		ln -s $(DBG_LIB_SHARED_NAME) $(DESTDIR)$(libdir)/$(DBG_LIB_SHAREDEV_BSO)
 		$(LDCONFIG) -n $(DESTDIR)$(libdir)
+		install -pm 644 -t $(DESTDIR)$(libdir)/pkgconfig ustr-debug.pc
+
+install-common:
 		install -pm 644 -t $(DESTDIR)$(includedir) $(SRC_HDRS)
+		install -pm 644 -t $(DESTDIR)$(includedir_arch) $(SRC_HDRS_ARCH)
 		install -pm 644 -t $(DESTDIR)$(SHRDIR) $(SRC_SRCS)
 		install -pm 644 -t $(DESTDIR)$(SHRDIR) $(XSRC_SRCS)
 		install -pm 644 -t $(DESTDIR)$(DOCSHRDIR) $(DOCS)
+		install -pm 644 -t $(DESTDIR)$(DOCSHRDIR)/html $(DOCSHTML)
 		install -pm 644 -t $(DESTDIR)$(EXAMDIR) $(EXAMPLES)
 		install -pm 644 -t $(DESTDIR)$(mandir)/man1 $(MAN_PAGES_1)
 		install -pm 644 -t $(DESTDIR)$(mandir)/man3 $(MAN_PAGES_3)
-		install -m 755 -t $(DESTDIR)$(bindir) ustr-import
-		install -pm 644 -t $(DESTDIR)$(libdir)/pkgconfig ustr.pc ustr-debug.pc
+		install -m 755 ustr-import $(DESTDIR)$(bindir)/$(bin_arch_prefix)ustr-import
 
-ustr-import-multilib: ustr-import-multilib.in
-		sed -e 's,@INCLUDEDIR@,$(includedir),g' -e 's,@MBINDIR@,$(MBINDIR),g' < $< > $@
+ustr-import-multilib: ustr-import-multilib.in config.status
+		./config.status
 
-install-multilib-linux: install autoconf_64b ustr-import-multilib
+install-multilib-linux: install ustr-import-multilib
 		install -d $(DESTDIR)$(MBINDIR)
-		$(HIDE)mlib=`./autoconf_64b`; \
-                   if test "x$$mlib" = "x1"; then mlib=64; else mlib=32; fi; \
-                   mv -f $(DESTDIR)$(includedir)/ustr-conf-debug.h \
-                         $(DESTDIR)$(includedir)/ustr-conf-debug-$$mlib.h; \
-                   mv -f $(DESTDIR)$(includedir)/ustr-conf.h \
-                         $(DESTDIR)$(includedir)/ustr-conf-$$mlib.h; \
-                   mv -f $(DESTDIR)$(bindir)/ustr-import \
-                         $(DESTDIR)$(MBINDIR)/ustr-import-$$mlib
+		$(HIDE)mv -f $(DESTDIR)$(includedir)/ustr-conf-debug.h \
+                         $(DESTDIR)$(includedir)/ustr-conf-debug-$(mlib).h
+		$(HIDE)mv -f $(DESTDIR)$(includedir)/ustr-conf.h \
+                         $(DESTDIR)$(includedir)/ustr-conf-$(mlib).h
+		$(HIDE)mv -f $(DESTDIR)$(bindir)/ustr-import \
+                         $(DESTDIR)$(MBINDIR)/ustr-import-$(mlib)
 		install -m 644 -t $(DESTDIR)$(includedir) $(SRC_HDRS_MULTI_LIB)
 		$(HIDE)mv -f $(DESTDIR)$(includedir)/ustr-conf-debug-multilib-linux.h $(DESTDIR)$(includedir)/ustr-conf-debug.h
 		$(HIDE)mv -f $(DESTDIR)$(includedir)/ustr-conf-multilib-linux.h $(DESTDIR)$(includedir)/ustr-conf.h
@@ -433,7 +481,7 @@ install-multilib-linux: install autoconf_64b ustr-import-multilib
 
 
 clean:
-		$(HIDE)echo Cleanup
+		@echo Cleanup
 		$(HIDE)rm -f $(LIB_SHARED) $(LIB_STATIC)
 		$(HIDE)rm -f $(TST_ALL)
 		$(HIDE)rm -f *.o
@@ -443,82 +491,62 @@ clean:
 		$(HIDE)rm -f ustr-import-multilib
 
 distclean: clean
-		rm -f ustr-import
-		rm -f autoconf_64b autoconf_vsnprintf
+		rm -f ustr-import ustr-import-multilib
 		rm -f ustr-conf.h ustr-conf-debug.h
 		rm -rf lcov-output
+		rm -f config.status config.log
+
+maintainer-clean: distclean
+		rm -rf autom4te.cache
+		rm -f Makefile
 
 
-ustr-import: ustr-import.in autoconf_64b autoconf_vsnprintf
-		$(HIDE)echo Creating $@
-		$(HIDE)sz64=`./autoconf_64b`; vsnp=`./autoconf_vsnprintf`; \
-		sed -e 's,@INCLUDEDIR@,$(includedir),g' -e 's,@SHRDIR@,$(SHRDIR),g' -e 's,@VERS@,$(VERS),g'  -e 's,@VERS_FULL@,$(VERS_FULL),g' -e "s,@HAVE_64bit_SIZE_MAX@,$$sz64,g" -e "s,@HAVE_RETARDED_VSNPRINTF@,$$vsnp,g" < $< > $@
-		$(HIDE)chmod 755 $@
-
-# Use CFLAGS so that CFLAGS="... -m32" does the right thing
-autoconf_64b: autoconf_64b.c
-		$(HIDE)echo Compiling: auto configuration test:  64bit
-		$(HIDE)$(CC) $(CFLAGS) -o $@ $<
-
-autoconf_vsnprintf: autoconf_vsnprintf.c
-		$(HIDE)echo Compiling: auto configuration test:  vsnprintf
-		$(HIDE)$(CC) -o $@ $<
+ustr-import: ustr-import.in config.status
+		./config.status
 
 # Use LDFLAGS for LDFLAGS="-m32"
 $(OPT_LIB_SHARED): $(LIB_SHARED_OPT)
-		$(HIDE)echo Linking SO OPT lib: $@
+		$(if $(HIDE), @echo Linking SO OPT lib: $@)
 		$(HIDE)$(CC) -shared $^ -Wl,-soname -Wl,$(OPT_LIB_SHARED_NAME) -Wl,-version-script -Wl,libustr.ver $(LDFLAGS) -o $@
 
 $(DBG_LIB_SHARED): $(LIB_SHARED_DBG)
-		$(HIDE)echo Linking SO DBG lib: $@
+		$(if $(HIDE), @echo Linking SO DBG lib: $@)
 		$(HIDE)$(CC) -shared $^ -Wl,-soname -Wl,$(DBG_LIB_SHARED_NAME) -Wl,-version-script -Wl,libustr.ver $(LDFLAGS) -o $@
 
 libustr.a: $(LIB_STATIC_OPT)
-		$(HIDE)echo Linking A OPT lib: $@
+		$(if $(HIDE), @echo Linking A OPT lib: $@)
 		$(HIDE)$(AR) ru $@ $^
 		$(HIDE)$(RANLIB) $@
 libustr-debug.a: $(LIB_STATIC_DBG)
-		$(HIDE)echo Linking A DBG lib: $@
+		$(if $(HIDE), @echo Linking A DBG lib: $@)
 		$(HIDE)$(AR) ru $@ $^
 		$(HIDE)$(RANLIB) $@
 
-ustr-conf.h: ustr-conf.h.in autoconf_64b autoconf_vsnprintf
-		$(HIDE)echo Creating $@
-		$(HIDE)have_stdint_h=0; dbg1=0; dbg2=0; \
-                sz64=`./autoconf_64b`; vsnp=`./autoconf_vsnprintf`; \
-                if test -f "/usr/include/stdint.h"; then have_stdint_h=1; fi; \
-                if test -f "$(prefix)/include/stdint.h"; then have_stdint_h=1; fi; \
-                if test -f "$(includedir)/stdint.h"; then have_stdint_h=1; fi; \
-		sed -e "s,@HAVE_STDINT_H@,$$have_stdint_h,g" -e "s,@USE_ASSERT@,$$dbg1,g" -e "s,@USE_EOS_MARK@,$$dbg2,g" -e "s,@HAVE_64bit_SIZE_MAX@,$$sz64,g" -e "s,@HAVE_RETARDED_VSNPRINTF@,$$vsnp,g" < $< > $@
+ustr-conf.h: ustr-conf.h.in config.status
+		./config.status
 
-ustr-conf-debug.h: ustr-conf.h.in autoconf_64b autoconf_vsnprintf
-		$(HIDE)echo Creating $@
-		$(HIDE)have_stdint_h=0; dbg1=1; dbg2=1; \
-                sz64=`./autoconf_64b`; vsnp=`./autoconf_vsnprintf`; \
-                if test -f "/usr/include/stdint.h"; then have_stdint_h=1; fi; \
-                if test -f "$(prefix)/include/stdint.h"; then have_stdint_h=1; fi; \
-                if test -f "$(includedir)/stdint.h"; then have_stdint_h=1; fi; \
-		sed -e "s,@HAVE_STDINT_H@,$$have_stdint_h,g" -e "s,@USE_ASSERT@,$$dbg1,g" -e "s,@USE_EOS_MARK@,$$dbg2,g" -e "s,@HAVE_64bit_SIZE_MAX@,$$sz64,g" -e "s,@HAVE_RETARDED_VSNPRINTF@,$$vsnp,g" < $< > $@
+ustr-conf-debug.h: ustr-conf-debug.h.in config.status
+		./config.status
 
 
 #  We don't use $(DEPS_NONC_ALL) as deps. because it then recompiles everything
 # too much, and we care about speed more. Do make clean to "fix".
 #  Yes, scons fixes this.
 %-code-so-opt.o: %-opt-code.c %-code.h %.h $(DEPS_C_ALL)
-		$(HIDE)echo Compiling for SO OPT lib: $<
-		$(HIDE)$(CC) $(CFLAGS)     -fPIC $(CFLG_LIB_OPT) -o $@ -c $<
+		$(if $(HIDE), @echo Compiling for SO OPT lib: $<)
+		$(HIDE)$(CC) $(CFLAGS) -fPIC $(CFLG_LIB_OPT) $(CPPFLAGS) -o $@ -c $<
 
 %-code-so-dbg.o: %-dbg-code.c %-code.h %.h $(DEPS_C_ALL)
-		$(HIDE)echo Compiling for SO DBG lib: $<
-		$(HIDE)$(CC) $(DBG_CFLAGS) -fPIC $(CFLG_LIB_DBG) -o $@ -c $<
+		$(if $(HIDE), @echo Compiling for SO DBG lib: $<)
+		$(HIDE)$(CC) $(DBG_CFLAGS) -fPIC $(CFLG_LIB_DBG) $(CPPFLAGS) -o $@ -c $<
 
 %-code-a-opt.o:  %-opt-code.c %-code.h %.h $(DEPS_C_ALL)
-		$(HIDE)echo Compiling for A  OPT lib: $<
-		$(HIDE)$(CC) $(CFLAGS)           $(CFLG_LIB_OPT) -o $@ -c $<
+		$(if $(HIDE), @echo Compiling for A  OPT lib: $<)
+		$(HIDE)$(CC) $(CFLAGS) $(CFLG_LIB_OPT) $(CPPFLAGS) -o $@ -c $<
 
 %-code-a-dbg.o:  %-dbg-code.c %-code.h %.h $(DEPS_C_ALL)
-		$(HIDE)echo Compiling for A  DBG lib: $<
-		$(HIDE)$(CC) $(DBG_CFLAGS)       $(CFLG_LIB_DBG) -o $@ -c $<
+		$(if $(HIDE), @echo Compiling for A  DBG lib: $<)
+		$(HIDE)$(CC) $(DBG_CFLAGS) $(CFLG_LIB_DBG) $(CPPFLAGS) -o $@ -c $<
 
 
 perf-sizes: perf-sizes.c $(OBJS_C_OPT_ALL)
@@ -543,30 +571,30 @@ octst_%.c: T/ctst_%.c
 
 # Debugging tst and "compiled" tst (links with libustr-debug)
 tst_%.o: tst_%.c tst.h $(DEPS_NONC_ALL)
-		$(HIDE)echo "Compiling:  " $@
-		$(HIDE)$(CC) $(DBG_CFLAGS) $(CFLG_TST_C) -o $@ -c $<
+		$(if $(HIDE), @echo "Compiling:  " $@)
+		$(HIDE)$(CC) $(DBG_CFLAGS) $(CFLG_TST_C) $(CPPFLAGS) -o $@ -c $<
 
 tst_%: tst_%.o
 		$(HIDE)$(CC) $(LDFLAGS)  -o $@ $<
 
 ctst_%.o: ctst_%.c tst.h $(DEPS_C_ALL)
-		$(HIDE)echo "Compiling: " $@
-		$(HIDE)$(CC) $(DBG_CFLAGS) $(CFLG_TST) -o $@ -c $<
+		$(if $(HIDE), @echo "Compiling: " $@)
+		$(HIDE)$(CC) $(DBG_CFLAGS) $(CFLG_TST) $(CPPFLAGS) -o $@ -c $<
 
 ctst_%: ctst_%.o $(OBJS_C_DBG_ALL)
 		$(HIDE)$(CC) $(LDFLAGS) -o $@ $^
 
 # Optimized tst and "compiled" tst (links with libustr)
 otst_%.o: otst_%.c tst.h $(DEPS_NONC_ALL)
-		$(HIDE)echo "Compiling: " $@
-		$(HIDE)$(CC) $(CFLAGS) $(CFLG_TST_CO) -o $@ -c $<
+		$(if $(HIDE), @echo "Compiling: " $@)
+		$(HIDE)$(CC) $(CFLAGS) $(CFLG_TST_CO) $(CPPFLAGS) -o $@ -c $<
 
 otst_%: otst_%.o
 		$(HIDE)$(CC) $(LDFLAGS)  -o $@ $<
 
 octst_%.o: octst_%.c tst.h $(DEPS_C_ALL)
-		$(HIDE)echo "Compiling:" $@
-		$(HIDE)$(CC) $(CFLAGS) $(CFLG_TST_O) -o $@ -c $<
+		$(if $(HIDE), @echo "Compiling:" $@)
+		$(HIDE)$(CC) $(CFLAGS) $(CFLG_TST_O) $(CPPFLAGS) -o $@ -c $<
 
 octst_%: octst_%.o $(OBJS_C_OPT_ALL)
 		$(HIDE)$(CC) $(LDFLAGS) -o $@ $^
@@ -578,9 +606,8 @@ check-lcov: check ./scripts/lcov.sh
 # --------------------------------
 # Borrowed from automake output...
 # --------------------------------
-PACKAGE_BUGREPORT = "james@and.org"
 check: $(DBG_LIB_STATIC) $(TST_ALL)
-	$(HIDE)failed=0; all=0; xfail=0; xpass=0; skip=0; ws='[        ]'; \
+	@failed=0; all=0; xfail=0; xpass=0; skip=0; ws='[        ]'; \
 	list=' $(TST_ALL) '; \
         if test -n "$$list"; then \
 	  for tst in $$list; do \
@@ -648,4 +675,11 @@ check: $(DBG_LIB_STATIC) $(TST_ALL)
           test "$$failed" -eq 0; \
         else :; fi
 
+
+.PRECIOUS: Makefile
+Makefile: Makefile.in config.status
+		./config.status
+
+config.status: configure
+		./config.status --recheck
 

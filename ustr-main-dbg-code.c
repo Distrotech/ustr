@@ -7,5 +7,5 @@
 #define USTR_CONF_E_PROTO  extern
 #define USTR_CONF_I_PROTO
 #define USTR_CONF_EI_PROTO extern
-#define USTR_CONF_II_PROTO inline
+#define USTR_CONF_II_PROTO  __attribute__ ((gnu_inline)) inline
 #include "ustr-main.h"

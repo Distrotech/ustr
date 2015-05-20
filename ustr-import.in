@@ -1,9 +1,10 @@
 #! /bin/sh -e
 
-INCDIR=@INCLUDEDIR@
+prefix=@prefix@
+datarootdir=@datarootdir@
+INCDIR=@includedir@
 SHRDIR=@SHRDIR@
-VERS=@VERS@
-VERS_FULL=@VERS_FULL@
+PACKAGE_VERSION=@PACKAGE_VERSION@
 autoconf_64b=@HAVE_64bit_SIZE_MAX@
 autoconf_vsnprintf=@HAVE_RETARDED_VSNPRINTF@
 
@@ -47,7 +48,7 @@ usage()
   echo "         sub   = Substituting data"
   echo "         utf8  = Working with UTF8"
   echo ""
-  echo "     Ustr Version: $VERS_FULL"
+  echo "     Ustr Version: $PACKAGE_VERSION"
   exit $1
 }
 

@@ -16,7 +16,7 @@
 #ifdef va_copy
 # define USTR_CONF_HAVE_VA_COPY 1
 # define USTR__VA_COPY(x, y)   va_copy(x, y)
-#elif __va_copy
+#elif defined(__va_copy)
 # define USTR_CONF_HAVE_VA_COPY 1
 # define USTR__VA_COPY(x, y) __va_copy(x, y)
 #else
@@ -92,7 +92,7 @@
 #endif
 
 #if USTR_CONF_COMPILE_USE_INLINE
-#define USTR__INLINE inline
+#define USTR__INLINE  __attribute__ ((gnu_inline)) inline
 #else
 #define USTR__INLINE /* no inline */
 #endif
@@ -123,7 +123,7 @@
 # if USTR_CONF_INCLUDE_CODEONLY_HEADERS
 #  define USTR_CONF_II_PROTO static USTR__INLINE
 # else
-#  define USTR_CONF_II_PROTO extern inline
+#  define USTR_CONF_II_PROTO extern  __attribute__ ((gnu_inline)) inline
 # endif
 #endif
 
@@ -191,6 +191,13 @@
 # define USTR__COMPILE_ATTR_UNUSED(x) ustr__UNUSED_ ## x __attribute__((unused))
 #else
 # define USTR__COMPILE_ATTR_UNUSED(x) ustr__UNUSED_ ## x
+#endif
+
+#if defined(__GNUC__) && !defined(__STRICT_ANSI__) && \
+    USTR_CONF_HAVE_ATTR_UNUSED && USTR_CONF_COMPILE_USE_ATTRIBUTES
+# define USTR__COMPILE_ATTR_MAYBE_UNUSED(x) x __attribute__((unused))
+#else
+# define USTR__COMPILE_ATTR_MAYBE_UNUSED(x) x
 #endif
 
 #if defined(__GNUC__) && !defined(__STRICT_ANSI__) && \
